@@ -19,3 +19,5 @@ The most current output of the script is already saved in `unicorns.json` file a
 > I have also published analysis of this dataset [here](https://observablehq.com/d/30988e8d13372aa2).
 
 ## License
+
+MIT © [Shubham Garg](https://www.shubhamgrg.com/)
