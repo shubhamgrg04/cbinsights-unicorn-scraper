@@ -2,7 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs");
 
-// scrape extra details from company page on website
+// scrape extra details from company page on cb insights website
 // ex page: https://www.cbinsights.com/company/stripe
 async function scrapeCompanyPage(cbUrl) {
   const pageResponse = await axios({
