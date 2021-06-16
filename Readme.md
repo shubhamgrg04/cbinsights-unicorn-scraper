@@ -16,7 +16,7 @@ node index.js
 
 The most current output of the script is already saved in `unicorns.json` file and is regularly updated.
 
-> I have also published analysis of this dataset [here](https://observablehq.com/d/30988e8d13372aa2).
+> I have also published analysis of this dataset [here](https://observablehq.com/@shubhamgrg04/unicorn-companies).
 
 ## License
 

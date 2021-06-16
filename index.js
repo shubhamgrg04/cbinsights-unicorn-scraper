@@ -58,7 +58,12 @@ async function scrapeAndSaveData() {
       const companyData = {
         name: div.find("td:nth-child(1) > a").text(),
         cbUrl: div.find("td:nth-child(1) > a").attr("href"),
-        valuation: div.find("td:nth-child(2)").attr("data-value"),
+        valuation: parseInt(
+          div
+            .find("td:nth-child(2)")
+            .text()
+            .replace(/[^\d]+/, "")
+        ),
         dateJoined: div.find("td:nth-child(3)").text(),
         yearJoined: div.find("td:nth-child(3)").text().split("/")[2],
         country: div.find("td:nth-child(4)").text(),
