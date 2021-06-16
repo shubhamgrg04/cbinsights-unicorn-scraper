@@ -58,8 +58,9 @@ async function scrapeAndSaveData() {
       const companyData = {
         name: div.find("td:nth-child(1) > a").text(),
         cbUrl: div.find("td:nth-child(1) > a").attr("href"),
-        valuation: div.find("td:nth-child(2)").text(),
+        valuation: div.find("td:nth-child(2)").attr("data-value"),
         dateJoined: div.find("td:nth-child(3)").text(),
+        yearJoined: div.find("td:nth-child(3)").text().split("/")[2],
         country: div.find("td:nth-child(4)").text(),
         city: div.find("td:nth-child(5)").text(),
         industry: div.find("td:nth-child(6)").text(),
@@ -73,7 +74,7 @@ async function scrapeAndSaveData() {
       companyData.description = extraDetails.description;
       data.push(companyData);
 
-      // addign 100 ms sleep to avoid getting blocked
+      // adding 100 ms sleep to avoid getting blocked
       await sleep(100);
     }
 
