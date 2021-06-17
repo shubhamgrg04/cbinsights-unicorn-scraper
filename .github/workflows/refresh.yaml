@@ -18,3 +18,10 @@ jobs:
         run: npm ci
       - name: Run Script
         run: node index.js
+      - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version
+        with:
+          add: "unicorns.json"
+          author_name: Shubham Garg
+          author_email: shubhamgrg04@gmail.com
+          default_author: user_info
+          message: "updating unicorns.json using github actions"

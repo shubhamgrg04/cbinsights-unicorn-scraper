@@ -53,7 +53,8 @@ async function scrapeAndSaveData() {
 
     const data = [];
 
-    for (let i = 0; i < unicornDivs.length; i++) {
+    // for (let i = 0; i < unicornDivs.length; i++) {
+    for (let i = 0; i < 5; i++) {
       const div = $(unicornDivs[i]);
       const companyData = {
         name: div.find("td:nth-child(1) > a").text(),
