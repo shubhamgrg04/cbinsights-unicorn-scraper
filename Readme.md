@@ -22,8 +22,6 @@ npm install
 node index.js
 ```
 
-> I have also published analysis of this dataset [here]().
-
 ## License
 
 MIT © [Shubham Garg](https://www.shubhamgrg.com/)
