@@ -66,7 +66,7 @@ async function scrapeAndSaveData() {
         country: div.find("td:nth-child(4)").text(),
         city: div.find("td:nth-child(5)").text(),
         industry: div.find("td:nth-child(6)").text(),
-        investors: div.find("td:nth-child(7)").text().split(", "),
+        investor: div.find("td:nth-child(7)").text().split(", "),
       };
 
       // fetching extra details from individual company pages on CB Insights
@@ -80,6 +80,7 @@ async function scrapeAndSaveData() {
       await sleep(100);
     }
 
+    console.log("updating data in unicorns.json");
     fs.writeFile("unicorns.json", JSON.stringify(data), function (err) {
       if (err) {
         console.log(err);
