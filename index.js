@@ -73,9 +73,9 @@ async function scrapeAndSaveData() {
 
       // fetching extra details from individual company pages on CB Insights
       const extraDetails = await scrapeCompanyPage(companyData.cbUrl);
-      companyData.website = website in extraDetails ? extraDetails.website : "";
-      companyData.funding = funding in extraDetails ? extraDetails.funding : "";
-      companyData.description = description in extraDetails ? extraDetails.description : "";
+      companyData.website = "website" in extraDetails ? extraDetails.website : "";
+      companyData.funding = "funding" in extraDetails ? extraDetails.funding : "";
+      companyData.description = "description" in extraDetails ? extraDetails.description : "";
 
       data.push(companyData);
 
