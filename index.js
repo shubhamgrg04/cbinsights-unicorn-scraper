@@ -5,15 +5,15 @@ const fs = require("fs");
 // scrape extra details from company page on cb insights website
 // ex page: https://www.cbinsights.com/company/stripe
 async function scrapeCompanyPage(cbUrl) {
-  const pageResponse = await axios({
-    method: "get",
-    url: cbUrl,
-    headers: { Accept: "*/*" },
-  });
-
-  const $ = cheerio.load(pageResponse.data);
-
   try {
+    const pageResponse = await axios({
+      method: "get",
+      url: cbUrl,
+      headers: { Accept: "*/*" },
+    });
+
+    const $ = cheerio.load(pageResponse.data);
+  
     return {
       name: $("#company_header > div.span9 > h1 > span").text(),
       website: $("#company_header > div.span9 > h1 > small > a").attr("href"),
@@ -30,7 +30,7 @@ async function scrapeCompanyPage(cbUrl) {
     };
   } catch (error) {
     console.log(error);
-    throw error;
+    return {}
   }
 }
 
@@ -47,11 +47,10 @@ async function scrapeAndSaveData() {
       url: baseUrl,
       headers: { Accept: "*/*" },
     });
-    console.log(baseResponse);
     const $ = cheerio.load(baseResponse.data);
 
     const unicornDivs = $("table > tbody > tr");
-    console.log("Found %d unicorns", unicornDivs);
+    console.log("Found %d unicorns", unicornDivs.length);
     const data = [];
 
     for (let i = 0; i < unicornDivs.length; i++) {
@@ -74,13 +73,14 @@ async function scrapeAndSaveData() {
 
       // fetching extra details from individual company pages on CB Insights
       const extraDetails = await scrapeCompanyPage(companyData.cbUrl);
-      companyData.website = extraDetails.website;
-      companyData.funding = extraDetails.funding;
-      companyData.description = extraDetails.description;
+      companyData.website = website in extraDetails ? extraDetails.website : "";
+      companyData.funding = funding in extraDetails ? extraDetails.funding : "";
+      companyData.description = description in extraDetails ? extraDetails.description : "";
+
       data.push(companyData);
 
-      // adding 200 ms sleep to avoid getting blocked
-      await sleep(200);
+      // adding 100 ms sleep to avoid getting blocked
+      await sleep(100);
     }
 
     console.log("updating data in unicorns.json");
