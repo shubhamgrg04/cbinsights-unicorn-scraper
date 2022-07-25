@@ -29,7 +29,7 @@ async function scrapeCompanyPage(cbUrl) {
         .replace(/^\s+|\s+$/g, ""),
     };
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return {}
   }
 }
