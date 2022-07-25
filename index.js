@@ -40,17 +40,18 @@ function sleep(ms) {
 
 async function scrapeAndSaveData() {
   const baseUrl = "https://www.cbinsights.com/research-unicorn-companies";
-
+  console.log("Scraping %s", baseUrl)
   try {
     const baseResponse = await axios({
       method: "get",
       url: baseUrl,
       headers: { Accept: "*/*" },
     });
+    console.log(baseResponse);
     const $ = cheerio.load(baseResponse.data);
 
-    const unicornDivs = $("#element-32 > div > table > tbody > tr");
-
+    const unicornDivs = $("table > tbody > tr");
+    console.log("Found %d unicorns", unicornDivs);
     const data = [];
 
     for (let i = 0; i < unicornDivs.length; i++) {
@@ -69,6 +70,8 @@ async function scrapeAndSaveData() {
         investor: div.find("td:nth-child(7)").text().split(", "),
       };
 
+      console.log("Fetching data for %s", companyData.name);
+
       // fetching extra details from individual company pages on CB Insights
       const extraDetails = await scrapeCompanyPage(companyData.cbUrl);
       companyData.website = extraDetails.website;
@@ -76,11 +79,12 @@ async function scrapeAndSaveData() {
       companyData.description = extraDetails.description;
       data.push(companyData);
 
-      // adding 100 ms sleep to avoid getting blocked
-      await sleep(100);
+      // adding 200 ms sleep to avoid getting blocked
+      await sleep(200);
     }
 
     console.log("updating data in unicorns.json");
+    console.log(data);
     fs.writeFile("unicorns.json", JSON.stringify(data), function (err) {
       if (err) {
         console.log(err);
