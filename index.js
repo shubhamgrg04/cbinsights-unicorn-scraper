@@ -84,7 +84,6 @@ async function scrapeAndSaveData() {
     }
 
     console.log("updating data in unicorns.json");
-    console.log(data);
     fs.writeFile("unicorns.json", JSON.stringify(data), function (err) {
       if (err) {
         console.log(err);
