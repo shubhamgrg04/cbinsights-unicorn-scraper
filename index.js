@@ -38,6 +38,25 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// JSON to CSV Converter
+function convertToCsv(objArray) {
+  var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
+  var str = "";
+
+  for (var i = 0; i < array.length; i++) {
+    var line = "";
+    for (var index in array[i]) {
+      if (line != "") line += ",";
+
+      line += array[i][index];
+    }
+
+    str += line + "\r\n";
+  }
+
+  return str;
+}
+
 async function scrapeAndSaveData() {
   const baseUrl = "https://www.cbinsights.com/research-unicorn-companies";
   console.log("Scraping %s", baseUrl)
@@ -85,6 +104,14 @@ async function scrapeAndSaveData() {
 
     console.log("updating data in unicorns.json");
     fs.writeFile("unicorns.json", JSON.stringify(data), function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    // Convert JSON to CSV & Display CSV
+    csv = convertToCsv(data);
+    fs.writeFile("unicorns.csv", csv, function (err) {
       if (err) {
         console.log(err);
       }
