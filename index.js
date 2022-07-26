@@ -99,7 +99,7 @@ async function scrapeAndSaveData() {
       data.push(companyData);
 
       // adding 100 ms sleep to avoid getting blocked
-      await sleep(100);
+      // await sleep(100);
     }
 
     console.log("updating data in unicorns.json");
