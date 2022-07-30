@@ -87,7 +87,6 @@ async function scrapeAndSaveData() {
     const unicornDivs = $("table > tbody > tr");
     console.log("Found %d unicorns", unicornDivs.length);
     const data = [];
-    data.push(getHeaders())
     // for (let i = 0; i < unicornDivs.length; i++) {
     for (let i = 0; i < 2; i++) {
       const div = $(unicornDivs[i]);
@@ -125,6 +124,7 @@ async function scrapeAndSaveData() {
     });
 
     // Convert JSON to CSV & Display CSV
+    data.unshift(getHeaders())
     csv = convertToCsv(data);
     fs.writeFile("unicorns.csv", csv, function (err) {
       if (err) {
