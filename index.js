@@ -13,20 +13,20 @@ async function scrapeCompanyPage(cbUrl) {
     });
 
     const $ = cheerio.load(pageResponse.data);
-  
+    //*[@id="__next"]/main/div[1]/div/header/div[2]/a
     return {
-      name: $("#company_header > div.span9 > h1 > span").text(),
-      website: $("#company_header > div.span9 > h1 > small > a").attr("href"),
-      description: $(
-        "#dashboard > div:nth-child(1) > div.span6 > p.hide-phone > span"
-      )
-        .text()
-        .replace(/(^\s+|\s+$)/g, ""),
-      funding: $(
-        "#dashboard > div.row.mt20 > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > span"
-      )
-        .text()
-        .replace(/^\s+|\s+$/g, ""),
+      name: $("main > div:nth-child(1) > div:nth-child(1) > header > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > h1").text(),
+      website: $("main > div:nth-child(1) > div:nth-child(1) > header > div:nth-child(2) > a").attr("href"),
+      // description: $(
+      //   "#dashboard > div:nth-child(1) > div.span6 > p.hide-phone > span"
+      // )
+      //   .text()
+      //   .replace(/(^\s+|\s+$)/g, ""),
+      // funding: $(
+      //   "#dashboard > div.row.mt20 > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > span"
+      // )
+      //   .text()
+      //   .replace(/^\s+|\s+$/g, ""),
     };
   } catch (error) {
     console.log(error.message);
@@ -57,6 +57,22 @@ function convertToCsv(objArray) {
   return str;
 }
 
+function getHeaders() {
+  return {
+    date: "Updated at",
+    name: "Company",
+    cbUrl: "Crunchbase Url",
+    valuation: "Last Valuation (Billion $)",
+    dateJoined: "Date Joined",
+    yearJoined: "Year Joined",
+    city: "City",
+    country: "Country",
+    industry: "Industry",
+    investor: "Investors",
+    website: "Company Website"
+  }
+}
+
 async function scrapeAndSaveData() {
   const baseUrl = "https://www.cbinsights.com/research-unicorn-companies";
   console.log("Scraping %s", baseUrl)
@@ -71,10 +87,12 @@ async function scrapeAndSaveData() {
     const unicornDivs = $("table > tbody > tr");
     console.log("Found %d unicorns", unicornDivs.length);
     const data = [];
-
-    for (let i = 0; i < unicornDivs.length; i++) {
+    data.push(getHeaders())
+    // for (let i = 0; i < unicornDivs.length; i++) {
+    for (let i = 0; i < 2; i++) {
       const div = $(unicornDivs[i]);
       const companyData = {
+        date: new Date().toLocaleString("en-US"),
         name: div.find("td:nth-child(1) > a").text(),
         cbUrl: div.find("td:nth-child(1) > a").attr("href"),
         valuation: parseFloat(
@@ -82,19 +100,16 @@ async function scrapeAndSaveData() {
         ),
         dateJoined: div.find("td:nth-child(3)").text(),
         yearJoined: div.find("td:nth-child(3)").text().split("/")[2],
-        country: div.find("td:nth-child(4)").text(),
         city: div.find("td:nth-child(5)").text(),
+        country: div.find("td:nth-child(4)").text(),
         industry: div.find("td:nth-child(6)").text(),
         investor: div.find("td:nth-child(7)").text().split(", "),
       };
-
       console.log("Fetching data for %s", companyData.name);
-
-      // fetching extra details from individual company pages on CB Insights
       const extraDetails = await scrapeCompanyPage(companyData.cbUrl);
       companyData.website = "website" in extraDetails ? extraDetails.website : "";
-      companyData.funding = "funding" in extraDetails ? extraDetails.funding : "";
-      companyData.description = "description" in extraDetails ? extraDetails.description : "";
+      // companyData.funding = "funding" in extraDetails ? extraDetails.funding : "";
+      // companyData.description = "description" in extraDetails ? extraDetails.description : "";
 
       data.push(companyData);
 
