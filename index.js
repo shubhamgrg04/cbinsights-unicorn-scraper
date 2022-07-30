@@ -87,8 +87,7 @@ async function scrapeAndSaveData() {
     const unicornDivs = $("table > tbody > tr");
     console.log("Found %d unicorns", unicornDivs.length);
     const data = [];
-    // for (let i = 0; i < unicornDivs.length; i++) {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < unicornDivs.length; i++) {
       const div = $(unicornDivs[i]);
       const companyData = {
         date: new Date().toLocaleString("en-US"),
@@ -124,13 +123,13 @@ async function scrapeAndSaveData() {
     });
 
     // Convert JSON to CSV & Display CSV
-    data.unshift(getHeaders())
-    csv = convertToCsv(data);
-    fs.writeFile("unicorns.csv", csv, function (err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+    // data.unshift(getHeaders())
+    // csv = convertToCsv(data);
+    // fs.writeFile("unicorns.csv", csv, function (err) {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    // });
 
     return data;
   } catch (error) {
