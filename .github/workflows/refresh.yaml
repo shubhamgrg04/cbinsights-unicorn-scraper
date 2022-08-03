@@ -22,7 +22,7 @@ jobs:
         run: node index.js
       - uses: EndBug/add-and-commit@v7
         with:
-          add: "unicorns.json unicorns.csv"
+          add: "unicorns.json"
           author_name: Shubham Garg
           author_email: shubhamgrg04@gmail.com
           default_author: user_info
