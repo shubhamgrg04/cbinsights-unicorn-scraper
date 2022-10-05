@@ -1,9 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs");
+const {stringify} = require('csv-stringify/sync');
 
 // scrape extra details from company page on cb insights website
-// ex page: https://www.cbinsights.com/company/stripe
+// example page: https://www.cbinsights.com/company/stripe
 async function scrapeCompanyPage(cbUrl) {
   try {
     const pageResponse = await axios({
@@ -13,20 +14,9 @@ async function scrapeCompanyPage(cbUrl) {
     });
 
     const $ = cheerio.load(pageResponse.data);
-    //*[@id="__next"]/main/div[1]/div/header/div[2]/a
     return {
       name: $("main > div:nth-child(1) > div:nth-child(1) > header > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > h1").text(),
       website: $("main > div:nth-child(1) > div:nth-child(1) > header > div:nth-child(2) > a").attr("href"),
-      // description: $(
-      //   "#dashboard > div:nth-child(1) > div.span6 > p.hide-phone > span"
-      // )
-      //   .text()
-      //   .replace(/(^\s+|\s+$)/g, ""),
-      // funding: $(
-      //   "#dashboard > div.row.mt20 > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > span"
-      // )
-      //   .text()
-      //   .replace(/^\s+|\s+$/g, ""),
     };
   } catch (error) {
     console.log(error.message);
@@ -38,24 +28,6 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// JSON to CSV Converter
-function convertToCsv(objArray) {
-  var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
-  var str = "";
-
-  for (var i = 0; i < array.length; i++) {
-    var line = "";
-    for (var index in array[i]) {
-      if (line != "") line += ";";
-
-      line += array[i][index];
-    }
-
-    str += line + "\r\n";
-  }
-
-  return str;
-}
 
 function getHeaders() {
   return {
@@ -106,14 +78,10 @@ async function scrapeAndSaveData() {
       console.log("Fetching data for %s", companyData.name);
       const extraDetails = await scrapeCompanyPage(companyData.cbUrl);
       companyData.website = "website" in extraDetails ? extraDetails.website : "";
-      // companyData.funding = "funding" in extraDetails ? extraDetails.funding : "";
-      // companyData.description = "description" in extraDetails ? extraDetails.description : "";
-
       data.push(companyData);
-
-      // adding 100 ms sleep to avoid getting blocked
-      // await sleep(100);
     }
+
+    data.sort((a,b) => (a.yearJoined < b.yearJoined)?1:-1);
 
     console.log("updating data in unicorns.json");
     fs.writeFile("unicorns.json", JSON.stringify(data), function (err) {
@@ -122,14 +90,14 @@ async function scrapeAndSaveData() {
       }
     });
 
-    // Convert JSON to CSV & Display CSV
-    // data.unshift(getHeaders())
-    // csv = convertToCsv(data);
-    // fs.writeFile("unicorns.csv", csv, function (err) {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // });
+    console.log("updating data in unicorns.csv");
+    data.unshift(getHeaders())
+    csv = stringify(data);
+    fs.writeFile("unicorns.csv", csv, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
 
     return data;
   } catch (error) {
